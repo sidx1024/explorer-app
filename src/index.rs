@@ -6,7 +6,7 @@
 //!
 //! * **Build:** a multi-threaded crawl with `FindFirstFileEx` (large fetch). (Everything reads the
 //!   NTFS MFT instead, which needs administrator rights.)
-//! * **Persist:** saved to `%LOCALAPPDATA%\Explorer26\index\<serial>.e26idx`, so later launches are
+//! * **Persist:** saved to `%LOCALAPPDATA%\Explorer App\index\<serial>.e26idx`, so later launches are
 //!   instant. A background re-crawl then picks up changes made while the app was closed.
 //! * **Live:** a recursive `ReadDirectoryChangesW` on the drive root marks folders dirty, and they
 //!   are rescanned in batches about once a second.

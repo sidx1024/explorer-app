@@ -84,7 +84,7 @@ pub fn run(start: Option<PathBuf>) -> Result<()> {
 
     unsafe {
         let instance = GetModuleHandleW(None)?;
-        let class = w!("Explorer26Window");
+        let class = w!("ExplorerAppWindow");
         let wc = WNDCLASSEXW {
             cbSize: std::mem::size_of::<WNDCLASSEXW>() as u32,
             style: CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
@@ -103,7 +103,7 @@ pub fn run(start: Option<PathBuf>) -> Result<()> {
         let hwnd = CreateWindowExW(
             WINDOW_EX_STYLE::default(),
             class,
-            w!("Explorer26"),
+            w!("Explorer App"),
             // Clip children so Direct2D never paints over a hosted preview handler.
             WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
             x,

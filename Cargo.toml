@@ -1,8 +1,8 @@
 [package]
-name = "explorer26"
+name = "explorer-app"
 version = "0.1.0"
 edition = "2021"
-description = "Explorer26 - a fast, native-looking file explorer for Windows"
+description = "Explorer App - a fast, native-looking file explorer for Windows"
 
 [dependencies]
 windows-numerics = "0.3.1"

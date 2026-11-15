@@ -1,4 +1,4 @@
-# Explorer26
+# Explorer App
 
 A fast, native-looking file explorer for Windows 11, written from scratch in Rust: raw Win32,
 Direct2D and the real Windows shell, with no UI framework.
@@ -45,13 +45,13 @@ cargo build --release
 cargo test
 ```
 
-Run `target\release\explorer26.exe [folder-or-file]`.
+Run `target\release\explorer-app.exe [folder-or-file]`.
 
 ## Settings
 
-* `%LOCALAPPDATA%\Explorer26\config.ini`: global settings (also available from the ··· menu).
+* `%LOCALAPPDATA%\Explorer App\config.ini`: global settings (also available from the ··· menu).
 * `thumbnail_store=central|folder`: whether `thumbs26.db` lives in
-  `%LOCALAPPDATA%\Explorer26\folders` (default) or hidden inside each folder.
+  `%LOCALAPPDATA%\Explorer App\folders` (default) or hidden inside each folder.
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the design, the `thumbs26.db` format and the
 plan for web access.

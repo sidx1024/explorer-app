@@ -90,12 +90,22 @@ pub fn known_folder(id: &GUID) -> Option<PathBuf> {
     }
 }
 
-/// %LOCALAPPDATA%\Explorer26 (redirected per package when running from MSIX).
+/// %LOCALAPPDATA%\Explorer App (redirected per package when running from MSIX).
 pub fn app_data_dir() -> PathBuf {
     let base = known_folder(&windows::Win32::UI::Shell::FOLDERID_LocalAppData)
         .or_else(|| std::env::var_os("LOCALAPPDATA").map(PathBuf::from))
         .unwrap_or_else(std::env::temp_dir);
-    base.join("Explorer26")
+    let dir = base.join("Explorer App");
+    // One-time move from the app's previous name (keeps settings, thumbnails and the index).
+    // Done once, before any thread can create the new folder.
+    static MIGRATED: std::sync::Once = std::sync::Once::new();
+    MIGRATED.call_once(|| {
+        let old = base.join("Explorer26");
+        if !dir.exists() && old.is_dir() {
+            let _ = std::fs::rename(&old, &dir);
+        }
+    });
+    dir
 }
 
 /// FILETIME (100 ns ticks since 1601) as local "short date + time", like Explorer's Date column.

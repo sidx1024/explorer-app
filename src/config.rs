@@ -1,4 +1,4 @@
-//! Global settings in `%LOCALAPPDATA%\Explorer26\config.ini` (human-editable).
+//! Global settings in `%LOCALAPPDATA%\Explorer App\config.ini` (human-editable).
 //!
 //! Per-folder settings (view, sort, column widths) do not live here: they are stored with that
 //! folder's thumbnails in its `thumbs26.db` (see `store.rs` / `thumbs.rs`).
@@ -10,7 +10,7 @@ use crate::store::parse_kv;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ThumbLocation {
-    /// One `<hash>.thumbs26.db` per folder under `%LOCALAPPDATA%\Explorer26\folders`.
+    /// One `<hash>.thumbs26.db` per folder under `%LOCALAPPDATA%\Explorer App\folders`.
     Central,
     /// A hidden `thumbs26.db` inside each folder (falls back to central when not writable).
     InFolder,
@@ -116,7 +116,7 @@ impl Config {
             .map(|w| format!("{},{},{},{},{}", w[0], w[1], w[2], w[3], w[4]))
             .unwrap_or_default();
         let text = format!(
-            "; Explorer26 settings. Per-folder view settings are stored in each folder's thumbs26.db.\n\
+            "; Explorer App settings. Per-folder view settings are stored in each folder's thumbs26.db.\n\
              [appearance]\n\
              theme={theme}\n\
              mica={}\n\
@@ -126,9 +126,9 @@ impl Config {
              show_hidden={}\n\
              show_protected_os_files={}\n\
              show_extensions={}\n\
-             ; central = %LOCALAPPDATA%\\Explorer26\\folders, folder = hidden thumbs26.db inside each folder\n\
+             ; central = %LOCALAPPDATA%\\Explorer App\\folders, folder = hidden thumbs26.db inside each folder\n\
              thumbnail_store={}\n\
-             ; index fixed drives for instant search (stored in %LOCALAPPDATA%\\Explorer26\\index)\n\
+             ; index fixed drives for instant search (stored in %LOCALAPPDATA%\\Explorer App\\index)\n\
              index_drives={}\n\
              search_system_files={}\n\
              \n\

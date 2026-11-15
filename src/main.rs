@@ -34,7 +34,9 @@ fn main() {
         .nth(1)
         .map(PathBuf::from)
         .map(|p| std::path::absolute(&p).unwrap_or(p));
+    // Settle the data folder (and its one-time rename) before worker threads start.
+    let _ = platform::app_data_dir();
     if let Err(e) = window::run(path) {
-        eprintln!("explorer26: {e}");
+        eprintln!("explorer-app: {e}");
     }
 }

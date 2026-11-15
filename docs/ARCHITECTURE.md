@@ -1,6 +1,6 @@
-# Explorer26 architecture
+# Explorer App architecture
 
-Explorer26 is a native Win32 + Direct2D file explorer written in Rust, modelled on Windows 11 File
+Explorer App is a native Win32 + Direct2D file explorer written in Rust, modelled on Windows 11 File
 Explorer. It follows the same approach as [images-app](https://github.com/sidx1024/images-app):
 no UI framework, everything custom-drawn, and real shell integration wherever Windows provides it.
 
@@ -83,7 +83,7 @@ CRC-32-checked records:
   file is rewritten through a temp file and an atomic rename. Pruning of deleted files runs when you leave a folder.
 * **Never clobbers:** a file with a foreign magic or newer version is left untouched.
 * **Location** (`config.ini` → `thumbnail_store`):
-  * `central` (default): `%LOCALAPPDATA%\Explorer26\folders\<fnv64(path)>.thumbs26.db`. This keeps
+  * `central` (default): `%LOCALAPPDATA%\Explorer App\folders\<fnv64(path)>.thumbs26.db`. This keeps
     folders clean (git repos, OneDrive, read-only media, network shares).
   * `folder`: a hidden+system `thumbs26.db` inside each folder on fixed local drives (the settings
     travel with the folder), falling back to central elsewhere. An existing in-folder db is still
@@ -91,7 +91,7 @@ CRC-32-checked records:
 * The file is created lazily, only when there is something to store.
 
 Global settings (theme, Mica, hidden files, extensions, compact view, window placement, pinned
-folders, nav width) live in the human-editable `%LOCALAPPDATA%\Explorer26\config.ini`.
+folders, nav width) live in the human-editable `%LOCALAPPDATA%\Explorer App\config.ini`.
 
 ## Instant search (index.rs)
 
@@ -102,7 +102,7 @@ Everything-style search without administrator rights:
   parallel with ASCII case-folding and need no per-name allocation.
 * Measured on a 1.7M-item C: drive: first crawl ≈15 s (multi-threaded `FindFirstFileEx`, at
   background CPU/IO priority); queries 13–65 ms; the saved index (161 MB) loads in ≈0.15 s.
-* Saved to `%LOCALAPPDATA%\Explorer26\index\<volume serial>.e26idx`; a background re-crawl at
+* Saved to `%LOCALAPPDATA%\Explorer App\index\<volume serial>.e26idx`; a background re-crawl at
   launch catches changes made while the app was closed.
 * Live updates: a recursive `ReadDirectoryChangesW` per drive collects changed folders, which
   are rescanned in one batch per second. A buffer overflow (or too many dead nodes) triggers a
@@ -115,13 +115,13 @@ Everything-style search without administrator rights:
 
 ## Web access: streaming the display list (planned)
 
-The goal is to use Explorer26 from a browser without rebuilding the UI in the DOM. Because the UI
+The goal is to use Explorer App from a browser without rebuilding the UI in the DOM. Because the UI
 core already paints into a `Scene` and consumes abstract `Input`, the web version is a second host,
 not a second UI.
 
 **Approach: remote display-list rendering (not video).**
 
-1. The server (Explorer26 headless, or a `--serve` mode) runs one `App` per browser session.
+1. The server (Explorer App headless, or a `--serve` mode) runs one `App` per browser session.
 2. Each frame, the `Scene` is serialized into a compact binary stream (`Fill`/`Round`/`Text`/`Image`/clip
    commands, in f32 DIPs) and **diffed** against the previous frame. Most frames (hover, caret
    blink) are a few dozen bytes.
