@@ -7,9 +7,9 @@
 #   .\packaging\build-msix.ps1 -IdentityName 12345Sid.ExplorerApp -Publisher "CN=ABCD-..." -PublisherDisplayName "Sid"
 param(
     # Store builds: use the Package/Identity values from Partner Center > Product identity.
-    [string]$IdentityName = "sidx1024.ExplorerApp",
-    [string]$Publisher = "CN=sidx1024",
-    [string]$PublisherDisplayName = "sidx1024",
+    [string]$IdentityName = "LowCortisolLabs.ExplorerApp",
+    [string]$Publisher = "CN=15D0EB72-F125-45AD-BEFF-C56DF7A660D6",
+    [string]$PublisherDisplayName = "Low Cortisol Labs",
     # The reserved app name.
     [string]$DisplayName = "Explorer App",
     # Defaults to Cargo.toml's version plus ".0". The Store needs a first part of at least 1.
