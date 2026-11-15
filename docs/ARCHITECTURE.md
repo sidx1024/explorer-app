@@ -154,4 +154,4 @@ rasterized server-side.
 
 Releases ship a portable exe, a per-user MSI (WiX, `packaging/wix`) and a Store MSIX (`packaging/msix`,
 `runFullTrust`), all built by `.github/workflows/release.yml`; see the README for publishing.
-Per-user data lives under `%LOCALAPPDATA%xplorer App`, which MSIX virtualizes per package.
+Per-user data lives under `%LOCALAPPDATA%\Explorer App`, which MSIX virtualizes per package.
