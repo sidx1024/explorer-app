@@ -150,7 +150,8 @@ rasterized server-side.
 * Drag & drop maps to browser upload/download (`DataTransfer`).
 * Auth/TLS on the WebSocket endpoint and a per-session sandbox root.
 
-## Microsoft Store (not started)
+## Distribution
 
-This will follow images-app's packaging: an MSIX with `runFullTrust`, plus an MSI via WiX. Per-user
-data lives under `%LOCALAPPDATA%`, which MSIX virtualizes per package, so it already works packaged.
+Releases ship a portable exe, a per-user MSI (WiX, `packaging/wix`) and a Store MSIX (`packaging/msix`,
+`runFullTrust`), all built by `.github/workflows/release.yml`; see the README for publishing.
+Per-user data lives under `%LOCALAPPDATA%xplorer App`, which MSIX virtualizes per package.

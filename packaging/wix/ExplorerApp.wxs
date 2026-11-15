@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Per-user MSI (no admin prompt): installs to %LOCALAPPDATA%\Programs\Explorer App, adds a Start
+     menu shortcut and "Open in Explorer App" to the context menu of folders, folder backgrounds and
+     drives. Uninstall (Settings > Apps > Installed apps) removes all of it; settings, thumbnails and
+     the search index in %LOCALAPPDATA%\Explorer App are kept.
+     Built by build-msi.ps1, which passes Version, Exe and Icon. -->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="Explorer App"
+    Manufacturer="sidx1024"
+    Version="$(var.Version)"
+    UpgradeCode="03361C11-4456-4DF6-9882-DD6D8341BAB0"
+    Scope="perUser"
+    Language="1033">
+
+    <SummaryInformation Description="Explorer App - a fast, native file explorer" />
+    <!-- Remove the old version inside the transaction, so a failed upgrade rolls back to it. -->
+    <MajorUpgrade Schedule="afterInstallInitialize" AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of Explorer App is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon" SourceFile="$(var.Icon)" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/sidx1024/explorer-app" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsFolder" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="Explorer App" />
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="ExplorerApp" Title="Explorer App">
+      <ComponentGroupRef Id="AppComponents" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+      <!-- Per-user components need an HKCU key path rather than a file (ICE38). -->
+      <Component Id="Executable" Guid="7704DFEC-980F-45A0-8565-26FF525978CB">
+        <File Id="AppExe" Name="explorer-app.exe" Source="$(var.Exe)" KeyPath="no" />
+        <RegistryValue Root="HKCU" Key="Software\Explorer App" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        <RemoveFolder Id="RemoveInstallFolder" On="uninstall" />
+        <RemoveFolder Id="RemoveProgramsFolder" Directory="ProgramsFolder" On="uninstall" />
+      </Component>
+
+      <Component Id="StartMenuShortcut" Directory="ProgramMenuFolder" Guid="3D7770D5-B40A-46CF-AE43-69802E070A96">
+        <Shortcut Id="AppShortcut" Name="Explorer App" Description="A fast, native file explorer"
+                  Target="[#AppExe]" WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\Explorer App" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+      <!-- "Open in Explorer App" for folders, folder backgrounds and drives (classic context menu). -->
+      <Component Id="ContextMenu" Guid="4E122431-8585-4F14-A7FD-FDF97EAA0905">
+        <RegistryValue Root="HKCU" Key="Software\Explorer App" Name="ContextMenu" Type="integer" Value="1" KeyPath="yes" />
+        <RegistryKey Root="HKCU" Key="Software\Classes\Directory\shell\ExplorerApp" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="Open in Explorer App" />
+          <RegistryValue Name="Icon" Type="string" Value="&quot;[#AppExe]&quot;,0" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[#AppExe]&quot; &quot;%V&quot;" />
+        </RegistryKey>
+        <RegistryKey Root="HKCU" Key="Software\Classes\Directory\Background\shell\ExplorerApp" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="Open in Explorer App" />
+          <RegistryValue Name="Icon" Type="string" Value="&quot;[#AppExe]&quot;,0" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[#AppExe]&quot; &quot;%V&quot;" />
+        </RegistryKey>
+        <RegistryKey Root="HKCU" Key="Software\Classes\Drive\shell\ExplorerApp" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="Open in Explorer App" />
+          <RegistryValue Name="Icon" Type="string" Value="&quot;[#AppExe]&quot;,0" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[#AppExe]&quot; &quot;%V&quot;" />
+        </RegistryKey>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
