@@ -703,9 +703,8 @@ impl App {
             if hot {
                 s.fill(cr, th.hover);
             }
-            if hot || self.hover == Hit::HeaderEdge(i) || self.hover == Hit::HeaderArea {
-                s.line(cr.r - 0.5, r.t + 6.0, cr.r - 0.5, r.b - 6.0, 1.0, th.divider);
-            }
+            // Always-visible separators show where columns can be resized.
+            s.line(cr.r - 0.5, r.t + 8.0, cr.r - 0.5, r.b - 8.0, 1.0, th.divider);
             let align = if col.right_aligned() { Align::Right } else { Align::Left };
             let label_r = if col.right_aligned() {
                 Rect::new(cr.l + 8.0, cr.t, cr.r - 10.0, cr.b)
@@ -715,7 +714,7 @@ impl App {
             s.text(label_r, col.title(), Font::Ui, th.text_dim, align);
             if view.sort == *col {
                 let g = if view.asc { glyph::CHEVRON_U } else { glyph::CHEVRON_D };
-                s.glyph(Rect::xywh(cr.cx() - 6.0, r.t, 12.0, 10.0), g, Font::Icon8, th.text_dim);
+                s.glyph(Rect::xywh(cr.cx() - 6.0, r.t + 2.0, 12.0, 10.0), g, Font::Icon8, th.text_dim);
             }
             self.hits.push((cr, Hit::Header(i)));
             self.hits.push((Rect::new(cr.r - 4.0, r.t, cr.r + 4.0, r.b), Hit::HeaderEdge(i)));

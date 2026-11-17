@@ -47,7 +47,7 @@ Free, all markets (or as you prefer).
 
 **What's new in this version:**
 
-> First Microsoft Store release.
+> Drives in This PC sort by letter, sharper title bar buttons, visible column separators, and a simpler app icon.
 
 **Features** (up to 20, one per line):
 

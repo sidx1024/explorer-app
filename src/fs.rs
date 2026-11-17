@@ -371,6 +371,8 @@ pub fn sort(entries: &[Entry], order: &mut [u32], key: Column, asc: bool) {
             return dirs;
         }
         let primary = match key {
+            // Drives sort by letter, as in File Explorer, not by label ("WD2TB (D:)" < "Windows (C:)").
+            Column::Name if a.drive.is_some() && b.drive.is_some() => a.path.cmp(&b.path),
             Column::Name => by_name(ia as usize, ib as usize),
             Column::Modified => a.modified.cmp(&b.modified),
             Column::Type => a
@@ -393,6 +395,27 @@ pub fn sort(entries: &[Entry], order: &mut [u32], key: Column, asc: bool) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn drives_sort_by_letter() {
+        let drive = |name: &str, root: &str| Entry {
+            name: name.into(),
+            path: PathBuf::from(root),
+            is_dir: true,
+            size: 0,
+            modified: 0,
+            attrs: FILE_ATTRIBUTE_DIRECTORY.0,
+            type_name: "Local Disk".into(),
+            icon: -1,
+            thumb: Thumb::Unknown,
+            drive: Some((0, 0)),
+            ext: String::new(),
+        };
+        let e = [drive("WD2TB (D:)", "D:\\"), drive("XBOX (E:)", "E:\\"), drive("Windows (C:)", "C:\\")];
+        let mut order = [0u32, 1, 2];
+        sort(&e, &mut order, Column::Name, true);
+        assert_eq!(order, [2, 0, 1]);
+    }
 
     #[test]
     fn wildcard() {

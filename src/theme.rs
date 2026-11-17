@@ -15,7 +15,10 @@ use windows::Win32::Graphics::Gdi::{
 };
 use windows::Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW};
 use windows::Win32::UI::Accessibility::{HCF_HIGHCONTRASTON, HIGHCONTRASTW};
-use windows::Win32::UI::Controls::MARGINS;
+use windows::Win32::UI::Controls::{
+    SetWindowThemeAttribute, MARGINS, WTA_NONCLIENT, WTA_OPTIONS, WTNCA_NODRAWCAPTION, WTNCA_NODRAWICON,
+    WTNCA_NOSYSMENU,
+};
 use windows::Win32::UI::WindowsAndMessaging::{
     SystemParametersInfoW, SPI_GETHIGHCONTRAST, SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS,
 };
@@ -268,6 +271,17 @@ pub fn apply_to_window(hwnd: HWND, theme: &Theme) {
                 MARGINS::default()
             };
             let _ = DwmExtendFrameIntoClientArea(hwnd, &m);
+            // With the frame extended, DWM also paints its own min/max/close buttons, which show
+            // through our transparent title bar behind the ones we draw. Turn them off (the system
+            // menu stays available through Alt+Space and the taskbar).
+            let flags = WTNCA_NODRAWCAPTION | WTNCA_NODRAWICON | WTNCA_NOSYSMENU;
+            let opts = WTA_OPTIONS { dwFlags: flags, dwMask: flags };
+            let _ = SetWindowThemeAttribute(
+                hwnd,
+                WTA_NONCLIENT,
+                &opts as *const _ as _,
+                std::mem::size_of::<WTA_OPTIONS>() as u32,
+            );
         }
     }
 }

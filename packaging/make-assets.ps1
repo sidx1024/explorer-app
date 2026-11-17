@@ -1,5 +1,5 @@
 # Regenerates the app icon (assets\explorer-app.ico, assets\explorer-app.png) and the MSIX logos
-# (packaging\msix\Assets) from one vector drawing: a Fluent-style folder with an accent badge.
+# (packaging\msix\Assets) from one vector drawing: a flat Fluent-style folder.
 #
 #   .\packaging\make-assets.ps1
 Add-Type -AssemblyName System.Drawing
@@ -13,21 +13,17 @@ function RoundRect([float]$x, [float]$y, [float]$w, [float]$h, [float]$r) {
     $p.CloseFigure(); $p
 }
 
-# Draws the folder into a square of side $s at ($ox, $oy) on a 16-unit grid.
+# Draws the folder into a square of side $s at ($ox, $oy) on a 16-unit grid: a flat two-tone
+# Fluent folder (back with tab, lighter front), no gradients or badges so it stays crisp at 16 px.
 function DrawFolder($g, [float]$s, [float]$ox, [float]$oy) {
     $u = $s / 16.0
     $back = New-Object System.Drawing.Drawing2D.GraphicsPath
-    $back.AddPath((RoundRect ($ox + 1*$u) ($oy + 2.5*$u) (6.2*$u) (4*$u) (1*$u)), $false)
-    $back.AddPath((RoundRect ($ox + 1*$u) ($oy + 4*$u) (14*$u) (9.5*$u) (1.2*$u)), $false)
-    $b1 = New-Object System.Drawing.Drawing2D.LinearGradientBrush((New-Object System.Drawing.PointF 0, ($oy + 2*$u)), (New-Object System.Drawing.PointF 0, ($oy + 14*$u)), [System.Drawing.Color]::FromArgb(255, 230, 160, 30), [System.Drawing.Color]::FromArgb(255, 214, 134, 10))
-    $g.FillPath($b1, $back)
-    $front = RoundRect ($ox + 1*$u) ($oy + 5.5*$u) (14*$u) (8.5*$u) (1.2*$u)
-    $b2 = New-Object System.Drawing.Drawing2D.LinearGradientBrush((New-Object System.Drawing.PointF 0, ($oy + 5*$u)), (New-Object System.Drawing.PointF 0, ($oy + 14*$u)), [System.Drawing.Color]::FromArgb(255, 255, 214, 92), [System.Drawing.Color]::FromArgb(255, 252, 186, 40))
-    $g.FillPath($b2, $front)
-    if ($s -ge 32) {
-        $acc = RoundRect ($ox + 9*$u) ($oy + 9.5*$u) (4.6*$u) (3.2*$u) (0.8*$u)
-        $g.FillPath((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 0, 103, 192))), $acc)
-    }
+    $back.FillMode = 'Winding'
+    $back.AddPath((RoundRect ($ox + 1*$u) ($oy + 2.5*$u) (6*$u) (3*$u) (1*$u)), $false)
+    $back.AddPath((RoundRect ($ox + 1*$u) ($oy + 3.5*$u) (14*$u) (10*$u) (1.2*$u)), $false)
+    $g.FillPath((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 226, 158, 24))), $back)
+    $front = RoundRect ($ox + 1*$u) ($oy + 5.5*$u) (14*$u) (8*$u) (1.2*$u)
+    $g.FillPath((New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(255, 255, 200, 61))), $front)
 }
 
 # A transparent PNG of size $w x $h with the folder drawn at $scale of the shorter side, centered.
